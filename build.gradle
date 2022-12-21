@@ -1,0 +1,36 @@
+plugins {
+	id 'java'
+	id 'checkstyle'
+}
+
+version '1.0-Gal-Snapshot'
+sourceCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+}
+
+checkstyle {
+    configProperties 'workspace_loc': project.projectDir
+    toolVersion = '8.25' 
+    showViolations = true
+    ignoreFailures = false
+}
+
+dependencies {
+    checkstyle "com.puppycrawl.tools:checkstyle:${project.extensions.checkstyle.toolVersion}"
+}
+
+tasks.register('checkstyle').configure {
+    description = 'Runs all Checkstyle tasks'
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    dependsOn tasks.withType(Checkstyle)
+}
+
+project.extensions.checkstyle.sourceSets.each { SourceSet s ->
+    tasks.named(s.getTaskName('checkstyle', null)).configure { Checkstyle task ->
+        task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP)
+        task.setSource(s.allSource)
+        getLogger().info("Reconfigured task \'${task.name}\' to include *all* files in sourceSet \'${s.name}\'")
+    }
+}
