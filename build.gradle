@@ -12,7 +12,7 @@ repositories {
 
 checkstyle {
     configProperties 'workspace_loc': project.projectDir
-    toolVersion = '8.25' 
+    toolVersion = '8.38' 
     showViolations = true
     ignoreFailures = false
 }
